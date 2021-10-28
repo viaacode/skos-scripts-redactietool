@@ -5,7 +5,7 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 CONSTRUCT {
   ?concept a skos:Concept;
       skos:prefLabel ?label;
-      rdfs:comment ?desc;
+      dcterms:description ?desc;
       skos:inScheme <https://data.meemoo.be/terms/ond/graad>.
 
   <https://data.meemoo.be/terms/ond/graad> a skos:Collection;
@@ -15,7 +15,7 @@ CONSTRUCT {
   <https://data.meemoo.be/terms/ond/structuur> a skos:ConceptScheme;
     dcterms:title "Meemoo lijst onderwijsstructuur"@nl.
 }
-FROM <file:onderwijsgraad.csv#encoding=utf-8;header=absent>
+FROM <file:dist/onderwijsgraad.csv#encoding=utf-8;header=absent>
 WHERE {
     BIND (ENCODE_FOR_URI(LCASE(REPLACE(?b, " ", "-"))) AS ?key)
     BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/graad#', ?key)) AS ?concept)

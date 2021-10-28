@@ -5,7 +5,7 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 CONSTRUCT {
   ?concept a skos:Concept;
       skos:prefLabel ?label;
-      rdfs:comment ?desc;
+      dcterms:description ?desc;
       skos:inScheme <https://data.meemoo.be/terms/ond/vak>;
       skos:related ?thema;
       skos:related ?graad.
@@ -14,7 +14,7 @@ CONSTRUCT {
     dcterms:title "Meemoo lijst vakken"@nl.
 
 }
-FROM <file:vak.csv#encoding=utf-8;header=absent>
+FROM <file:dist/vak.csv#encoding=utf-8;header=absent>
 WHERE {
     BIND (ENCODE_FOR_URI(LCASE(REPLACE(?b, " ", "-"))) AS ?key)
     BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/vak#', ?key)) AS ?concept)

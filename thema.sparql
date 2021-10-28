@@ -5,16 +5,16 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 CONSTRUCT {
   ?concept a skos:Concept;
       skos:prefLabel ?label;
-      rdfs:comment ?desc;
+      dcterms:description ?desc;
       skos:inScheme <https://data.meemoo.be/terms/ond/themas>;
       skos:related ?vak.
 
   <https://data.meemoo.be/terms/ond/themas> a skos:ConceptScheme;
     dcterms:title "Meemoo lijst thema"@nl.
 }
-FROM <file:thema.csv#encoding=utf-8;header=absent>
+FROM <file:dist/thema.csv#encoding=utf-8;header=absent>
 WHERE {
-    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?a, " ", "-"))) AS ?key)
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?b, " ", "-"))) AS ?key)
     BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/thema#', ?key)) AS ?concept)
     BIND (STRLANG(?b, "nl") AS ?label)
     BIND (STRLANG(?c, "nl") AS ?desc)
