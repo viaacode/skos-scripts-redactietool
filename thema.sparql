@@ -1,0 +1,25 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  ?concept a skos:Concept;
+      skos:prefLabel ?label;
+      rdfs:comment ?desc;
+      skos:inScheme <https://data.meemoo.be/terms/ond/themas>;
+      skos:related ?vak.
+
+  <https://data.meemoo.be/terms/ond/themas> a skos:ConceptScheme;
+    dcterms:title "Meemoo lijst thema"@nl.
+}
+FROM <file:thema.csv#encoding=utf-8;header=absent>
+WHERE {
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?a, " ", "-"))) AS ?key)
+    BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/thema#', ?key)) AS ?concept)
+    BIND (STRLANG(?b, "nl") AS ?label)
+    BIND (STRLANG(?c, "nl") AS ?desc)
+
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?d, " ", "-"))) AS ?vak_key)
+    BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/vak#', ?vak_key)) AS ?vak)
+}
+OFFSET 1

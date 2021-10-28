@@ -1,0 +1,25 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  ?concept a skos:Concept;
+      skos:prefLabel ?label;
+      rdfs:comment ?desc;
+      skos:inScheme <https://data.meemoo.be/terms/ond/graad>.
+
+  <https://data.meemoo.be/terms/ond/graad> a skos:Collection;
+    skos:member ?concept;
+    dcterms:title "Onderwijsgraden"@nl.
+
+  <https://data.meemoo.be/terms/ond/structuur> a skos:ConceptScheme;
+    dcterms:title "Meemoo lijst onderwijsstructuur"@nl.
+}
+FROM <file:onderwijsgraad.csv#encoding=utf-8;header=absent>
+WHERE {
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?b, " ", "-"))) AS ?key)
+    BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/graad#', ?key)) AS ?concept)
+    BIND (STRLANG(?b, "nl") AS ?label)
+    BIND (STRLANG(?c, "nl") AS ?desc)
+}
+OFFSET 1
