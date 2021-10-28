@@ -22,7 +22,13 @@ WHERE {
     BIND (STRLANG(?b, "nl") AS ?label)
     BIND (STRLANG(?c, "nl") AS ?desc)
 
-    BIND (ENCODE_FOR_URI(LCASE(REPLACE(STRBEFORE(?d," ("), " ", "-"))) AS ?vak_key)
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(
+            IF(  
+                CONTAINS(?d, " ("),
+                STRBEFORE(?d," ("),
+                ?d
+            )
+        , " ", "-"))) AS ?vak_key)
     BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/vak#', ?vak_key)) AS ?vak)
 }
 OFFSET 1

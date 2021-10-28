@@ -19,7 +19,14 @@ CONSTRUCT {
 }
 FROM <file:dist/vak.csv#encoding=utf-8;header=absent>
 WHERE {
-    BIND (ENCODE_FOR_URI(LCASE(REPLACE(STRBEFORE(?b," ("), " ", "-"))) AS ?key)
+    BIND (ENCODE_FOR_URI(LCASE(
+        REPLACE(
+            IF(  
+                CONTAINS(?b, " ("),
+                STRBEFORE(?b," ("),
+                ?b
+            )
+            , " ", "-"))) AS ?key)
     BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/vak#', ?key)) AS ?concept)
     BIND (STRLANG(?b, "nl") AS ?label)
     BIND (STRLANG(?c, "nl") AS ?desc)
