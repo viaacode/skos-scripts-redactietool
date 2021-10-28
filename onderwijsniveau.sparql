@@ -6,7 +6,10 @@ CONSTRUCT {
   ?concept a skos:Concept;
       skos:prefLabel ?label;
       dcterms:description ?desc;
-      skos:inScheme <https://data.meemoo.be/terms/ond/structuur>.
+      skos:inScheme <https://data.meemoo.be/terms/ond/structuur>;
+      skos:narrower ?graad.
+
+  ?graad skos:broader ?concept.
 
   <https://data.meemoo.be/terms/ond/niveau> a skos:Collection;
     skos:member ?concept;
@@ -21,5 +24,9 @@ WHERE {
     BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/niveau#', ?key)) AS ?concept)
     BIND (STRLANG(?b, "nl") AS ?label)
     BIND (STRLANG(?c, "nl") AS ?desc)
+
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?d, " ", "-"))) AS ?graad_key)
+    BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/graad#', ?graad_key)) AS ?graad)
+
 }
 OFFSET 1

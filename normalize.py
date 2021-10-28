@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import argparse
+from numpy.core.numeric import NaN
 
 # importing packages
 import pandas as pd
@@ -28,9 +29,14 @@ def tidy_split(df, column, sep="|", keep=False):
     """
     indexes = list()
     new_values = list()
-    df = df.dropna(subset=[column])
-    for i, presplit in enumerate(df[column].astype(str)):
-        values = presplit.split(sep)
+
+    for i, presplit in enumerate(df[column]):
+        if presplit is NaN:
+            indexes.append(i)
+            new_values.append(presplit)
+            continue
+
+        values = presplit.split(sep)        
         if keep and len(values) > 1:
             indexes.append(i)
             new_values.append(presplit)

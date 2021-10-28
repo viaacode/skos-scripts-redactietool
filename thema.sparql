@@ -5,7 +5,7 @@ PREFIX dcterms: <http://purl.org/dc/terms/>
 CONSTRUCT {
   ?concept a skos:Concept;
       skos:prefLabel ?label;
-      dcterms:description ?desc;
+      skos:definition ?desc;
       skos:inScheme <https://data.meemoo.be/terms/ond/themas>;
       skos:related ?vak.
 
