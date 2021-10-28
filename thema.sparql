@@ -1,16 +1,19 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX ond: <https://data.meemoo.be/terms/ond/>
 
 CONSTRUCT {
   ?concept a skos:Concept;
       skos:prefLabel ?label;
       skos:definition ?desc;
-      skos:inScheme <https://data.meemoo.be/terms/ond/themas>;
+      skos:topConceptOf ond:themas;
+      skos:inScheme ond:themas;
       skos:related ?vak.
 
-  <https://data.meemoo.be/terms/ond/themas> a skos:ConceptScheme;
-    dcterms:title "Meemoo lijst thema"@nl.
+  ond:themas a skos:ConceptScheme;
+    skos:hasTopConcept ?concept;
+    dcterms:title "Meemoo lijst themas"@nl.
 }
 FROM <file:dist/thema.csv#encoding=utf-8;header=absent>
 WHERE {

@@ -1,21 +1,24 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX ond: <https://data.meemoo.be/terms/ond/>
 
 CONSTRUCT {
   ?concept a skos:Concept;
       skos:prefLabel ?label;
       dcterms:description ?desc;
-      skos:inScheme <https://data.meemoo.be/terms/ond/structuur>;
+      skos:topConceptOf ond:structuur;
+      skos:inScheme ond:structuur;
       skos:narrower ?graad.
 
   ?graad skos:broader ?concept.
 
-  <https://data.meemoo.be/terms/ond/niveau> a skos:Collection;
+  ond:niveau a skos:Collection;
     skos:member ?concept;
     dcterms:title "Onderwijsniveaus"@nl.
 
-  <https://data.meemoo.be/terms/ond/structuur> a skos:ConceptScheme;
+  ond:structuur a skos:ConceptScheme;
+    skos:hasTopConcept ?concept;
     dcterms:title "Meemoo lijst onderwijsstructuur"@nl.
 }
 FROM <file:dist/onderwijsniveau.csv#encoding=utf-8;header=absent>
