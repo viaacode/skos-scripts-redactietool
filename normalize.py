@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# importing packages
-import pandas as pd
 import argparse
 
-def tidy_split(df, column, sep='|', keep=False):
+# importing packages
+import pandas as pd
+
+
+def tidy_split(df, column, sep="|", keep=False):
     """
     Split the values of a column and expand so the new DataFrame has one split
     value per row. Filters rows where the column is missing.
@@ -39,22 +41,22 @@ def tidy_split(df, column, sep='|', keep=False):
     new_df[column] = new_values
     return new_df
 
-def normalize(args):
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("csv_file", help="csv file that need normalization")
+    parser.add_argument("column", nargs="+")
+    parser.add_argument(
+        "-s",
+        "--separator",
+        required=False,
+        help="Character to separate value on.",
+        default=",",
+    )
+
+    args = parser.parse_args()
 
     df = pd.read_csv(args.csv_file)
     for c in args.column:
         df = tidy_split(df, c, args.separator)
     print(df.to_csv())
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('csv_file', help="csv file that need normalization")
-    parser.add_argument('column', nargs='+')
-    parser.add_argument('-s', '--separator', required=False, help="Character to separate value on.", default=',')
-
-    args = parser.parse_args()
-
-    normalize(args)
-
-
-
