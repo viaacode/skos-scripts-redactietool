@@ -1,14 +1,18 @@
 # skos-scripts-redactietool
 Scripts to 
+
 - generate SKOS data from airtable CSV dumps
 - get thesauri data
 
-## Run the generation scripts
+## Run the generation scripts (`./generate_skos`)
 
-1. Put the airtable CSV dumps in the `/data` folder
-2. run the `./generate_skos.sh` script
-3. find the results in the `/dist` folder
-## Use the suggestion library
+You need Python, Pypi and Nodejs.
+
+1. Install the necessary dependencies by running `./install.sh`
+2. Put the airtable CSV dumps in the `/data` folder
+3. run the `./generate_skos.sh` script
+4. find the results in the `/dist` folder
+## Use the suggestion library (`./suggest_python`)
 
 ```
 from suggest.Suggest import Suggest
