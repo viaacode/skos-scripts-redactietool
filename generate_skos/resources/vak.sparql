@@ -1,0 +1,40 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX ond: <https://data.meemoo.be/terms/ond/>
+
+CONSTRUCT {
+  ?concept a skos:Concept;
+      skos:prefLabel ?label;
+      dcterms:description ?desc;
+      skos:inScheme ond:vak;
+      skos:topConceptOf ond:vak;
+      skos:related ?thema;
+      skos:related ?graad.
+  
+  ond:vak a skos:ConceptScheme;
+    skos:hasTopConcept ?concept;
+    dcterms:title "Meemoo lijst vakken"@nl.
+
+}
+FROM <file:dist/vak.csv#encoding=utf-8;header=absent>
+WHERE {
+    BIND (ENCODE_FOR_URI(LCASE(
+        REPLACE(
+            IF(  
+                CONTAINS(?b, " ("),
+                STRBEFORE(?b," ("),
+                ?b
+            )
+            , " ", "-"))) AS ?key)
+    BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/vak#', ?key)) AS ?concept)
+    BIND (STRLANG(?b, "nl") AS ?label)
+    BIND (STRLANG(?c, "nl") AS ?desc)
+
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?e, " ", "-"))) AS ?vak_graad)
+    BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/graad#', ?vak_graad)) AS ?graad)
+
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?f, " ", "-"))) AS ?vak_thema)
+    BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/thema#', ?vak_thema)) AS ?thema)
+}
+OFFSET 1
