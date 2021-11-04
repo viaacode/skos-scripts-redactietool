@@ -5,5 +5,6 @@ rm tarql-1.2.tar.gz
 
 pip install pandas
 pip install argparse
+pip install skosify
 
 npm install -g ttl-merge

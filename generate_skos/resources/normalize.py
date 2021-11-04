@@ -6,6 +6,7 @@ from numpy.core.numeric import NaN
 
 # importing packages
 import pandas as pd
+import re
 
 
 def tidy_split(df, column, sep="|", keep=False):
@@ -36,7 +37,9 @@ def tidy_split(df, column, sep="|", keep=False):
             new_values.append(presplit)
             continue
 
-        values = presplit.split(sep)        
+        values = re.split('''{}(?=(?:[^'"]|'[^']*'|"[^"]*")*$)'''.format(sep), presplit)
+
+        #values = presplit.split(sep)        
         if keep and len(values) > 1:
             indexes.append(i)
             new_values.append(presplit)

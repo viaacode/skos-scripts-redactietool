@@ -1,12 +1,11 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX ond: <https://data.meemoo.be/terms/ond/>
 
 CONSTRUCT {
   ?concept a skos:Concept;
       skos:prefLabel ?label;
-      dcterms:description ?desc;
+      skos:definition ?desc;
       skos:inScheme ond:vak;
       skos:topConceptOf ond:vak;
       skos:related ?thema;
@@ -14,10 +13,9 @@ CONSTRUCT {
   
   ond:vak a skos:ConceptScheme;
     skos:hasTopConcept ?concept;
-    dcterms:title "Meemoo lijst vakken"@nl.
+    rdfs:label "Meemoo lijst vakken"@nl.
 
 }
-FROM <file:dist/vak.csv#encoding=utf-8;header=absent>
 WHERE {
     BIND (ENCODE_FOR_URI(LCASE(
         REPLACE(

@@ -10,7 +10,13 @@ mkdir ./dist
 ./resources/normalize.py data/onderwijsgraad.csv Onderwijsniveau > ./dist/onderwijsgraad.csv
 
 for f in ./resources/*.sparql; do
-    $tarql $f > dist/${f/'.sparql'/'.skos.ttl'}
+    filename="${f##*/}"
+    csvfile=dist/${filename/'.sparql'/'.csv'}
+
+    out=dist/${filename/'.sparql'/'.skos.ttl'}
+
+    $tarql -H -e "utf-8" $f $csvfile  > $out
 done
 
 ttl-merge -i ./dist -p ./resources/prefixes.json > dist/merged.skos.ttl
+skosify ./dist/merged.skos.ttl -o ./dist/final.skos.ttl
