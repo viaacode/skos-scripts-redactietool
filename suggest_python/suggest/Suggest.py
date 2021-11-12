@@ -1,7 +1,9 @@
 import os
-from typing import Literal
+from typing import Collection, Literal
 
 from SPARQLWrapper import JSON, POST, SPARQLWrapper2
+
+OND_NS = "https://data.meemoo.be/terms/ond/"
 
 
 def read_query(file_path):
@@ -29,37 +31,76 @@ class Suggest:
         self.sparql.setReturnFormat(JSON)
 
         query_dir = os.getcwd() + "/suggest/queries/"
-        self.VAKKEN_QUERY = read_query(query_dir + "vakken.sparql")
-        self.THEMAS_QUERY = read_query(query_dir + "themas.sparql")
-        self.GRADEN_QUERY = read_query(query_dir + "onderwijsgraden.sparql")
-        self.SUGGEST_QUERY = read_query(query_dir + "suggest.sparql")
+        self.GET_LIST_QUERY = read_query(query_dir + "get_conceptscheme.sparql")
+        self.GET_COLLECTION_QUERY = read_query(query_dir + "get_collection.sparql")
+        self.GET_CHILDREN_QUERY = read_query(query_dir + "get_narrower.sparql")
+        self.SUGGEST_BY_LABEL_QUERY = read_query(query_dir + "suggest_by_label.sparql")
+        self.SUGGEST_BY_ID_QUERY = read_query(query_dir + "suggest_by_id.sparql")
 
     def __exec_query(self, query: Literal, **kwargs):
         formatted = query.format(**kwargs)
         self.sparql.setQuery(formatted)
         for result in self.sparql.query().bindings:
-            yield {"id": result["id"].value, "label": result["label"].value}
+            yield {
+                "id": result["id"].value,
+                "label": result["label"].value,
+                "definition": result["definition"].value,
+            }
+
+    def get_list(self, scheme: Literal):
+        """Get a thesaurus concepts by scheme id."""
+
+        for res in self.__exec_query(self.GET_LIST_QUERY, scheme=scheme):
+            yield res
+
+    def get_collection(self, collection: Literal):
+        """Get a collection members by collection id."""
+
+        for res in self.__exec_query(self.GET_COLLECTION_QUERY, collection=collection):
+            yield res
+
+    def get_children(self, concept: Literal):
+        """Get the children of a concept."""
+
+        for res in self.__exec_query(self.GET_CHILDREN_QUERY, concept=concept):
+            yield res
 
     def get_vakken(self):
         """Get list 'vakken'."""
 
-        for res in self.__exec_query(self.VAKKEN_QUERY):
+        for res in self.get_list(OND_NS + "vak"):
             yield res
 
     def get_themas(self):
         """Get list 'themas'."""
 
-        for res in self.__exec_query(self.THEMAS_QUERY):
+        for res in self.get_list(OND_NS + "themas"):
             yield res
 
     def get_graden(self):
         """Get list 'onderwijsgraden'."""
 
-        for res in self.__exec_query(self.GRADEN_QUERY):
+        for res in self.get_collection(OND_NS + "graad"):
+            yield res
+
+    def get_niveaus(self):
+        """Get list 'onderwijsniveaus'."""
+
+        for res in self.get_collection(OND_NS + "niveau"):
             yield res
 
     def suggest(self, thema: Literal, graad: Literal):
+        """Suggest 'vakken' based on the identifiers of 'onderwijsgraad' and 'thema'."""
+
+        for res in self.__exec_query(
+            self.SUGGEST_BY_ID_QUERY, thema=thema, graad=graad
+        ):
+            yield res
+
+    def suggest_by_label(self, thema: Literal, graad: Literal):
         """Suggest 'vakken' based on 'onderwijsgraad' and 'thema'."""
 
-        for res in self.__exec_query(self.SUGGEST_QUERY, thema=thema, graad=graad):
+        for res in self.__exec_query(
+            self.SUGGEST_BY_LABEL_QUERY, thema=thema, graad=graad
+        ):
             yield res

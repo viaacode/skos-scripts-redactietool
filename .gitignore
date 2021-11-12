@@ -4,6 +4,7 @@ tarql-1.2
 prefixes.json
 data/
 dist/
+.DS_store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
