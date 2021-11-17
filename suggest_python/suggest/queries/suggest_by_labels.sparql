@@ -6,12 +6,19 @@ WHERE {{
     ?id a skos:Concept;
     skos:prefLabel ?label;
     skos:inScheme ond:vak;
-    skos:related ?t, ?g.
+    skos:related ?thema, ?graad.
+
+    ?thema skos:inScheme ond:themas.
+    ond:graad skos:member ?graad.
 
     OPTIONAL {{
         ?id skos:definition ?definition .
     }}
     
-    ?t skos:prefLabel "{thema}"@nl.
-    ?g skos:prefLabel "{graad}"@nl.
+    ?thema skos:prefLabel ?thema_label.
+    ?graad skos:prefLabel ?graad_label.
+
+    FILTER (
+        STR(?thema_label) IN ({themas}) && 
+        STR(?graad_label) IN ({graden}) )
 }}
