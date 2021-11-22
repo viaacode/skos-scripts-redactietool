@@ -23,7 +23,7 @@ PASSWORD = "password"
 
 suggest = Suggest(SPARQL_ENDPOINT, USER, PASSWORD)
 
-for r in suggest.suggest(['Recht'], ['Secundair 2de graad']):
+for r in suggest.suggest_by_label(['Recht'], ['Secundair 2de graad']):
     print(r)
 
 ```
