@@ -23,7 +23,10 @@ PASSWORD = "password"
 
 suggest = Suggest(SPARQL_ENDPOINT, USER, PASSWORD)
 
-for r in suggest.suggest_by_label(['Recht'], ['Secundair 2de graad']):
+for r in suggest.suggest_by_label('Recht', 'Secundair 2de graad'):
+    print(r)
+
+for r in suggest.suggest(['https://data.meemoo.be/terms/ond/thema#nederlandse-taal'],['https://data.meemoo.be/terms/ond/graad#lager-1ste-graad']):
     print(r)
 
 ```
