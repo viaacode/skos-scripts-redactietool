@@ -37,7 +37,9 @@ class Suggest:
         self.SUGGEST_BY_LABELS_QUERY = read_query(
             query_dir + "suggest_by_labels.sparql"
         )
-        self.SUGGEST_BY_IDS_QUERY = read_query(query_dir + "suggest_by_ids.sparql")
+        self.SUGGEST_BY_IDS_QUERY = read_query(query_dir + "suggest.sparql")
+        self.GET_CONCEPT_BY_ID_QUERY = read_query(query_dir + "get_concept.sparql")
+        self.GET_CANDIDATES_QUERY = read_query(query_dir + "candidates.sparql")
 
     def __exec_query(self, query: str, **kwargs):
         formatted = query.format(**kwargs)
@@ -50,9 +52,15 @@ class Suggest:
             }
 
     def get_list(self, scheme: str):
-        """Get a thesaurus concepts by scheme id."""
+        """Get thesaurus concepts by scheme id."""
 
         for res in self.__exec_query(self.GET_LIST_QUERY, scheme=scheme):
+            yield res
+
+    def get_concept(self, concept: str):
+        """Get thesaurus concept by id."""
+
+        for res in self.__exec_query(self.GET_CONCEPT_BY_ID_QUERY, concept=concept):
             yield res
 
     def get_collection(self, collection: str):
@@ -110,5 +118,16 @@ class Suggest:
 
         for res in self.__exec_query(
             self.SUGGEST_BY_LABELS_QUERY, themas=themas, graden=graden
+        ):
+            yield res
+
+    def get_candidates(self, thema: List[str], graad: List[str]):
+        """Get all possible 'vakken' based on the identifiers of 'onderwijsgraad' and 'thema'."""
+
+        themas = ", ".join("<" + str(t) + ">" for t in thema)
+        graden = ", ".join("<" + str(g) + ">" for g in graad)
+
+        for res in self.__exec_query(
+            self.GET_CANDIDATES_QUERY, themas=themas, graden=graden
         ):
             yield res
