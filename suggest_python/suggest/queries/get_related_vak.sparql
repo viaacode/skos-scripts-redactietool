@@ -1,0 +1,17 @@
+PREFIX ond: <https://data.meemoo.be/terms/ond/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT DISTINCT ?id ?label ?definition
+WHERE {{  
+    ?id a skos:Concept;
+    skos:prefLabel ?label;
+    skos:inScheme ond:vak;
+    skos:related ?concept.
+
+    OPTIONAL {{
+        ?id skos:definition ?definition .
+    }}
+
+    FILTER (?concept IN ({concepts})) 
+
+}}

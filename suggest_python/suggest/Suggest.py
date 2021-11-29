@@ -5,6 +5,8 @@ from SPARQLWrapper import JSON, POST, SPARQLWrapper2
 
 OND_NS = "https://data.meemoo.be/terms/ond/"
 
+def join_ids(ids):
+    return ", ".join("<" + str(id) + ">" for id in ids)
 
 def read_query(file_path):
     # check if file is present
@@ -40,6 +42,7 @@ class Suggest:
         self.SUGGEST_BY_IDS_QUERY = read_query(query_dir + "suggest.sparql")
         self.GET_CONCEPT_BY_ID_QUERY = read_query(query_dir + "get_concept.sparql")
         self.GET_CANDIDATES_QUERY = read_query(query_dir + "candidates.sparql")
+        self.GET_RELATED_VAK_QUERY = read_query(query_dir + "get_related_vak.sparql")
 
     def __exec_query(self, query: str, **kwargs):
         formatted = query.format(**kwargs)
@@ -102,8 +105,8 @@ class Suggest:
     def suggest(self, thema: List[str], graad: List[str]):
         """Suggest 'vakken' based on the identifiers of 'onderwijsgraad' and 'thema'."""
 
-        themas = ", ".join("<" + str(t) + ">" for t in thema)
-        graden = ", ".join("<" + str(g) + ">" for g in graad)
+        themas = join_ids(thema)
+        graden = join_ids(graad)
 
         for res in self.__exec_query(
             self.SUGGEST_BY_IDS_QUERY, themas=themas, graden=graden
@@ -124,10 +127,18 @@ class Suggest:
     def get_candidates(self, thema: List[str], graad: List[str]):
         """Get all possible 'vakken' based on the identifiers of 'onderwijsgraad' and 'thema'."""
 
-        themas = ", ".join("<" + str(t) + ">" for t in thema)
-        graden = ", ".join("<" + str(g) + ">" for g in graad)
+        themas = join_ids(thema)
+        graden = join_ids(graad)
 
         for res in self.__exec_query(
             self.GET_CANDIDATES_QUERY, themas=themas, graden=graden
         ):
+            yield res
+
+    def get_related_vak(self, concept: List[str]):
+        """Get related vak by concept ids."""
+
+        concepts = join_ids(concept)
+
+        for res in self.__exec_query(self.GET_RELATED_VAK_QUERY, concepts=concepts):
             yield res
