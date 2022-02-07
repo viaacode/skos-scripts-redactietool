@@ -8,7 +8,6 @@ from numpy.core.numeric import NaN
 import pandas as pd
 import re
 
-
 def tidy_split(df, column, sep="|", keep=False):
     """
     Split the values of a column and expand so the new DataFrame has one split

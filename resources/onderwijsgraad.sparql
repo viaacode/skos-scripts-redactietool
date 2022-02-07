@@ -1,6 +1,8 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX ond: <https://data.meemoo.be/terms/ond/>
+PREFIX ond: <https://data.hetarchief.be/id/onderwijs/>
+PREFIX meemoo: <https://data.hetarchief.be/ns/onderwijs#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT {
   ?concept a skos:Concept;
@@ -17,7 +19,7 @@ CONSTRUCT {
 }
 WHERE {
     BIND (ENCODE_FOR_URI(LCASE(REPLACE(?b, " ", "-"))) AS ?key)
-    BIND (URI(CONCAT('https://data.meemoo.be/terms/ond/graad#', ?key)) AS ?concept)
+    BIND (URI(CONCAT('https://data.hetarchief.be/id/onderwijs/graad/', ?key)) AS ?concept)
     BIND (STRLANG(?b, "nl") AS ?label)
     BIND (STRLANG(?c, "nl") AS ?desc)
 }

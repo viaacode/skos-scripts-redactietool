@@ -5,16 +5,8 @@ PREFIX ovak: <https://data.hetarchief.be/id/onderwijs/vak/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT {
-  ?concept a skos:Concept;
-      skos:prefLabel ?label;
-      skos:definition ?desc;
-      skos:inScheme ond:vak;
-      skos:topConceptOf ond:vak.
-  
-  ond:vak a skos:ConceptScheme;
-    skos:hasTopConcept ?concept;
-    skos:prefLabel "thesaurus vakken"@nl.
-
+  ?concept skos:related ?thema;
+      skos:related ?graad.
 }
 WHERE {
     BIND ('https://data.hetarchief.be/id/onderwijs/' AS ?ns)
@@ -27,7 +19,11 @@ WHERE {
             )
             , " ", "-"))) AS ?key)
     BIND (URI(CONCAT(?ns, 'vak/', ?key)) AS ?concept)
-    BIND (STRLANG(?b, "nl") AS ?label)
-    BIND (STRLANG(?c, "nl") AS ?desc)
+
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?e, " ", "-"))) AS ?vak_graad)
+    BIND (URI(CONCAT(?ns, 'structuur/', ?vak_graad)) AS ?graad)
+
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?f, " ", "-"))) AS ?vak_thema)
+    BIND (URI(CONCAT(?ns, 'thema/', ?vak_thema)) AS ?thema)
 }
 OFFSET 1

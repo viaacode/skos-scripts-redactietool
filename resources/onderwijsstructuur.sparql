@@ -1,0 +1,66 @@
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ond: <https://data.hetarchief.be/id/onderwijs/>
+PREFIX ocol: <https://data.hetarchief.be/id/onderwijs/collectie/>
+PREFIX ostr: <https://data.hetarchief.be/id/onderwijs/structuur/>
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+CONSTRUCT {
+  ond:structuur a skos:ConceptScheme;
+    skos:hasTopConcept ?niveau;
+    skos:prefLabel "thesaurus onderwijsstructuur"@nl.
+
+  ?niveau a skos:Concept;
+      skos:prefLabel ?niveau_label;
+      skos:definition ?niveau_desc;
+      skos:topConceptOf ond:structuur;
+      skos:inScheme ond:structuur;
+      skos:narrower ?niveau_narrower.
+
+  ?subniveau a skos:Concept;
+      skos:prefLabel ?subniveau_label;
+      skos:definition ?subniveau_desc;
+      skos:inScheme ond:structuur;
+      skos:broader ?niveau;
+      skos:narrower ?subniveau_narrower.
+
+  ?graad a skos:Concept;
+      skos:prefLabel ?graad_label;
+      skos:definition ?graad_desc;
+      skos:inScheme ond:structuur;
+      skos:broader ?graad_broader;
+      skos:narrower ?leerjaar.
+
+  ?leerjaar a skos:Concept;
+      skos:prefLabel ?leerjaar_label;
+      skos:definition ?leerjaar_desc;
+      skos:inScheme ond:structuur;
+      skos:broader ?leerjaar_broader.
+}
+WHERE {
+    BIND ('https://data.hetarchief.be/id/onderwijs/' AS ?ns)
+    
+    BIND (URI(CONCAT(?ns, 'structuur/', ENCODE_FOR_URI(LCASE(REPLACE(?a, " ", "-"))))) AS ?niveau)
+    BIND (STRLANG(?a, "nl") AS ?niveau_label)
+    BIND (STRLANG(?a, "nl") AS ?niveau_desc)
+
+    BIND (URI(CONCAT(?ns, 'structuur/', ENCODE_FOR_URI(LCASE(REPLACE(?b, " ", "-"))))) AS ?subniveau)
+    BIND (STRLANG(?b, "nl") AS ?subniveau_label)
+    BIND (STRLANG(?b, "nl") AS ?subniveau_desc)
+
+    BIND (URI(CONCAT(?ns, 'structuur/', ENCODE_FOR_URI(LCASE(REPLACE(?c, " ", "-"))))) AS ?graad)
+    BIND (STRLANG(?c, "nl") AS ?graad_label)
+    BIND (STRLANG(?c, "nl") AS ?graad_desc)
+
+    BIND (URI(CONCAT(?ns, 'structuur/', ENCODE_FOR_URI(LCASE(REPLACE(?d, " ", "-"))))) AS ?leerjaar)
+    BIND (STRLANG(?d, "nl") AS ?leerjaar_label)
+    BIND (STRLANG(?d, "nl") AS ?leerjaar_desc)
+
+    BIND (IF(BOUND(?b), ?subniveau, ?niveau) AS ?graad_broader)
+    BIND (IF(BOUND(?b), ?subniveau, ?graad) AS ?niveau_narrower)
+    BIND (IF(BOUND(?c), ?graad, ?leerjaar) AS ?subniveau_narrower)
+    BIND (IF(BOUND(?c), ?graad, ?subniveau) AS ?leerjaar_broader)
+
+}
+OFFSET 1
