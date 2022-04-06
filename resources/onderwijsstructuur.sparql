@@ -1,8 +1,8 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX ond: <https://data.hetarchief.be/id/onderwijs/>
-PREFIX ocol: <https://data.hetarchief.be/id/onderwijs/collectie/>
-PREFIX ostr: <https://data.hetarchief.be/id/onderwijs/structuur/>
+PREFIX ond: <https://w3id.org/onderwijs-vlaanderen/id/>
+PREFIX ocol: <https://w3id.org/onderwijs-vlaanderen/id/collectie/>
+PREFIX ostr: <https://w3id.org/onderwijs-vlaanderen/id/structuur/>
 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -39,7 +39,7 @@ CONSTRUCT {
       skos:broader ?leerjaar_broader.
 }
 WHERE {
-    BIND ('https://data.hetarchief.be/id/onderwijs/' AS ?ns)
+    BIND ('https://w3id.org/onderwijs-vlaanderen/id/' AS ?ns)
     
     BIND (URI(CONCAT(?ns, 'structuur/', ENCODE_FOR_URI(LCASE(REPLACE(?a, " ", "-"))))) AS ?niveau)
     BIND (STRLANG(?a, "nl") AS ?niveau_label)

@@ -1,14 +1,14 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX ond: <https://data.hetarchief.be/id/onderwijs/>
-PREFIX ovak: <https://data.hetarchief.be/id/onderwijs/vak/> 
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT {
   ?concept skos:related ?thema;
-      skos:related ?graad.
+      skos:related ?graad;
+      skos:related ?niveau.
 }
 WHERE {
+    BIND ('https://w3id.org/onderwijs-vlaanderen/id/' AS ?ext_ns)
     BIND ('https://data.hetarchief.be/id/onderwijs/' AS ?ns)
     BIND (ENCODE_FOR_URI(LCASE(
         REPLACE(
@@ -18,10 +18,13 @@ WHERE {
                 ?b
             )
             , " ", "-"))) AS ?key)
-    BIND (URI(CONCAT(?ns, 'vak/', ?key)) AS ?concept)
+    BIND (URI(CONCAT(?ext_ns, 'vak/', ?key)) AS ?concept)
 
     BIND (ENCODE_FOR_URI(LCASE(REPLACE(?e, " ", "-"))) AS ?vak_graad)
-    BIND (URI(CONCAT(?ns, 'structuur/', ?vak_graad)) AS ?graad)
+    BIND (URI(CONCAT(?ext_ns, 'structuur/', ?vak_graad)) AS ?graad)
+
+    BIND (ENCODE_FOR_URI(LCASE(REPLACE(?d, " ", "-"))) AS ?vak_niveau)
+    BIND (URI(CONCAT(?ext_ns, 'structuur/', ?vak_niveau)) AS ?niveau)
 
     BIND (ENCODE_FOR_URI(LCASE(REPLACE(?f, " ", "-"))) AS ?vak_thema)
     BIND (URI(CONCAT(?ns, 'thema/', ?vak_thema)) AS ?thema)

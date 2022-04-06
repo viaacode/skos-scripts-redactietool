@@ -1,15 +1,14 @@
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ond: <https://data.hetarchief.be/id/onderwijs/>
-PREFIX meemoo: <https://data.hetarchief.be/ns/onderwijs#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 CONSTRUCT {
   ?concept a skos:Concept;
       skos:prefLabel ?label;
       skos:definition ?desc;
-      skos:topConceptOf ond:thema-scheme;
-      skos:inScheme ond:thema-scheme;
+      skos:topConceptOf ond:thema;
+      skos:inScheme ond:thema;
       skos:related ?vak.
 
   ond:thema a skos:ConceptScheme;
@@ -17,6 +16,7 @@ CONSTRUCT {
     skos:prefLabel "thesaurus themas"@nl.
 }
 WHERE {
+    BIND ('https://w3id.org/onderwijs-vlaanderen/id/' AS ?ext_ns)
     BIND ('https://data.hetarchief.be/id/onderwijs/' AS ?ns)
     BIND (ENCODE_FOR_URI(LCASE(REPLACE(?b, " ", "-"))) AS ?key)
     BIND (URI(CONCAT(?ns, 'thema/', ?key)) AS ?concept)
@@ -30,6 +30,6 @@ WHERE {
                 ?d
             )
         , " ", "-"))) AS ?vak_key)
-    BIND (URI(CONCAT(?ns, 'vak/', ?vak_key)) AS ?vak)
+    BIND (URI(CONCAT(?ext_ns, 'vak/', ?vak_key)) AS ?vak)
 }
 OFFSET 1
